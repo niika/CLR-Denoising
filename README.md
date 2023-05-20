@@ -1,1 +1,1 @@
-# CLR-Denoising
+# CLR-Restoration
