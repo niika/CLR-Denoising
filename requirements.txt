@@ -1,0 +1,8 @@
+pandas==2.0.1
+pytorch-lightning==2.0.0
+matplotlib
+torchvision
+scipy
+numpy
+Pillow
+scikit_learn==1.2.2
