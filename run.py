@@ -5,6 +5,8 @@ from torchvision import models
 from torch import nn
 from simclr import SimCLR
 from sidar import SIDAR
+from models import CLREncoder
+
 model_names = sorted(name for name in models.__dict__
                      if name.islower() and not name.startswith("__")
                      and callable(models.__dict__[name]))
@@ -12,7 +14,7 @@ model_names = sorted(name for name in models.__dict__
 parser = argparse.ArgumentParser(description='PyTorch SimCLR')
 parser.add_argument('-data', metavar='DIR', default='../SIDAR',
                     help='path to dataset')
-parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet18',
+parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet50',
                     choices=model_names,
                     help='model architecture: ' +
                          ' | '.join(model_names) +
@@ -70,13 +72,7 @@ def main():
 
     base_model=args.arch
     out_dim=args.out_dim
-    resnet_dict = {"resnet18": models.resnet18(pretrained=False, num_classes=out_dim),
-                            "resnet50": models.resnet50(pretrained=False, num_classes=out_dim)}
-    model = resnet_dict[base_model]
-    dim_mlp = model.fc.in_features
-
-    # add mlp projection head
-    model.fc = nn.Sequential(nn.Linear(dim_mlp, dim_mlp), nn.ReLU(), model.fc)
+    model = CLREncoder(arch=base_model, out_dim=out_dim)
 
     optimizer = torch.optim.Adam(model.parameters(), args.lr, weight_decay=args.weight_decay)
 
