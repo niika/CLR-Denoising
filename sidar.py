@@ -85,10 +85,11 @@ class SIDAR(Dataset):
     
     def __getitem__(self, idx):  
         
-
         images = random.sample(self.images[idx], self.sequence_length)
         images = [img/255. for img in images]
-        gt = self.gt[idx]
+        if self.sequence_length == 1:
+            images=images[0]
+        gt = self.gt[idx]/255.
         #if gt.size()[1]>gt.size()[2]:
         #    gt = F.rotate(gt, -90)
 

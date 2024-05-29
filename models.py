@@ -141,7 +141,7 @@ class CLREncoder(nn.Module):
 
 class CLRDecoder(nn.Module):
     def __init__(self, n_blocks: List[int] = [6, 2, 2, 2, 4],  *args, **kwargs) -> None:
-        """_summary_
+        """Decoder for Contrastive Learning Representation 
 
         Args:
             n_blocks (List[int]): Number of residual blocks for each layer
@@ -179,3 +179,22 @@ class CLRDecoder(nn.Module):
 
     
 
+class CLRAutoencoder(nn.Module):
+    def __init__(self, checkpoint=None, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        if checkpoint is not None:
+            state = torch.load(checkpoint)
+            arch = state["arch"]
+            self.encoder = CLREncoder(arch=arch, out_dim=1024)
+            self.encoder.load_state_dict(state["state_dict"])
+            #self.encoder.__pretrained_weights__(checkpoint)
+        else:
+            self.encoder = CLREncoder(*args, **kwargs)
+        
+        self.decoder = CLRDecoder(*args, **kwargs)
+
+
+    def forward(self, x):
+        return self.decoder(self.encoder(x))
+    

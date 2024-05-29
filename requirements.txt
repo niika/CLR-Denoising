@@ -6,3 +6,4 @@ scipy
 numpy
 Pillow
 scikit_learn==1.2.2
+einops
